@@ -354,22 +354,22 @@ npm start
 ```
 
 ### MongoDB connection fails
-- ✅ Check MongoDB Atlas IP whitelist (add `0.0.0.0/0` for development)
-- ✅ Verify connection string in `.env` is correct
-- ✅ Ensure database user has read/write permissions
-- ✅ Check database password doesn't contain special characters (URL encode if needed)
+-  Check MongoDB Atlas IP whitelist (add `0.0.0.0/0` for development)
+-  Verify connection string in `.env` is correct
+-  Ensure database user has read/write permissions
+-  Check database password doesn't contain special characters (URL encode if needed)
 
 ### Emails not sending
-- ✅ Verify Gmail app password is correct (not your regular Gmail password)
-- ✅ Confirm 2-factor authentication is enabled on Google account
-- ✅ Check `EMAIL_USER` and `EMAIL_PASS` in `.env`
-- ✅ Try regenerating app password
+-  Verify Gmail app password is correct (not your regular Gmail password)
+-  Confirm 2-factor authentication is enabled on Google account
+-  Check `EMAIL_USER` and `EMAIL_PASS` in `.env`
+-  Try regenerating app password
 
 ### Chatbot not responding
-- ✅ Verify Groq API key is valid
-- ✅ Check you haven't exceeded free tier limits
-- ✅ Ensure backend server is running
-- ✅ Check browser console for errors
+-  Verify Groq API key is valid
+-  Check you haven't exceeded free tier limits
+-  Ensure backend server is running
+-  Check browser console for errors
 
 ### Frontend build errors
 ```bash
@@ -439,7 +439,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 
 **Built by Nikita Gupta |  2026**
-```
-
----
-
