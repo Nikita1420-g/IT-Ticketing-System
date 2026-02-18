@@ -79,33 +79,6 @@ A comprehensive full-stack IT ticketing system built with the MERN stack, featur
 
 ---
 
-## Screenshots
-
-### User Dashboard
-![User Dashboard](screenshots/user-dashboard.png)
-*Clean interface showing personal ticket overview with statistics*
-
-### Technician Dashboard
-![Technician Dashboard](screenshots/tech-dashboard.png)
-*Comprehensive view of all system tickets with filtering options*
-
-### Ticket Creation Modal
-![Create Ticket](screenshots/create-ticket.png)
-*User-friendly modal for creating support tickets*
-
-### Ticket Details
-![Ticket Details](screenshots/ticket-details.png)
-*Complete ticket information with status updates and notes*
-
-### AI Chatbot
-![Chatbot](screenshots/chatbot.png)
-*Intelligent assistant providing IT support and creating tickets*
-
-### Login & Registration
-![Login](screenshots/login.png)
-*Secure authentication interface*
-
----
 
 ## Installation & Setup
 
