@@ -13,7 +13,7 @@ export const register= async(userData)=>{
         }
         return response.data;
     } catch(error){
-        throw error.response ?.data || error;
+        throw error.response?.data || error;
     }
 };
 

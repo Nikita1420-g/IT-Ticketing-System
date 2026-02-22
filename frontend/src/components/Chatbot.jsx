@@ -286,7 +286,7 @@ const Chatbot=()=>{
                             <div className="message-avatar"><BsRobot size={20}/></div>
                             
                                 <div className="typing-indicator">
-                                    <span classNa me="typing-dot"></span>
+                                    <span className="typing-dot"></span>
                                     <span classNam="typing-dot"></span>
                                     <span className="typing-dot"></span>
                                 </div>
