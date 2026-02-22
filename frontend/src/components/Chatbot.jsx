@@ -277,7 +277,7 @@ const Chatbot=()=>{
                                 </span>
                         </div>
                         {message.type==='user' && (
-                            <div className= "message- avatar "><BsPersonCircle size={20}/></div>
+                            <div className= "message-avatar "><BsPersonCircle size={20}/></div>
                         )}
                         </div>
                     ))}
