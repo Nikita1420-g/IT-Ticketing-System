@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getMyTickets, createTicket }   from '../services/api';
+import { useNavigate } from 'react-router-dom';
+import { getMyTickets } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import TicketList from './TicketList';
 import TicketForm from './TicketForm';
@@ -7,158 +8,151 @@ import TicketDetails from './TicketDetails';
 import Chatbot from './Chatbot';
 import './UserDashboard.css';
 
-const UserDashboard=() =>{
-    const [tickets, setTickets]=useState([]);
-    const [filteredTickets, setFilteredTickets]= useState([]);
-    const [loading, setLoading]= useState(true);
-    const [showForm, setShowForm]= useState(false);
-    const [selectedTicket, setSelectedTicket]= useState(null);
-    const [statusFilter, setStatusFilter]= useState('all');
-    const { user, logout}= useAuth();
+const UserDashboard = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [tickets, setTickets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('All');
 
-    useEffect(()=>{
-        fetchMyTickets();
-    },[]);
+  useEffect(() => {
+    fetchTickets();
+  }, []);
 
-    useEffect(()=>{
-        applyFilters();
+  const fetchTickets = async () => {
+    try {
+      setLoading(true);
+      const response = await getMyTickets();
+      if (response.success) {
+        setTickets(response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching tickets:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    }, [tickets, statusFilter]);
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
-    const fetchMyTickets = async ()=>{
-        try{
-            setLoading(true);
-            const response= await getMyTickets();
-            setTickets(response.data || []);
-        } catch(error){
-            console.error('Error  fetching my tickets..', error);
-            if(error.message?.status===401){
-                logout();
-            }
-        } finally{
-            setLoading(false);
-        }
-    };
+  const getStatusCount = (status) => {
+    return tickets.filter(ticket => ticket.status === status).length;
+  };
 
-    const applyFilters=()=>{
-        let filtered= [...tickets];
+  const filteredTickets = tickets.filter(ticket => {
+    return statusFilter === 'All' || ticket.status === statusFilter;
+  });
 
-        if(statusFilter !== 'all'){
-            filtered= filtered.filter(ticket=> ticket.status=== statusFilter);
-        }
-        setFilteredTickets(filtered);
-    };
+  if (loading) {
+    return <div className="loading">Loading your tickets...</div>;
+  }
 
-    const handleCreateTicket= async(ticketData)=>{
-        try{
-            await createTicket(ticketData);
-            alert('Ticket created successfully');
+  return (
+    <div className="user-dashboard-simple">
+      {/* Header */}
+      <div className="simple-header">
+        <h1>My Support tickets</h1>
+        <p>Welcome Back, {user?.name}</p>
+      </div>
+
+      {/* User Info */}
+      <div className="simple-user-info">
+        {user?.email} ({user?.role})
+      </div>
+
+      {/* Logout Button */}
+      <button onClick={handleLogout} className="simple-logout">
+        Logout
+      </button>
+
+      {/* Stats Cards - Large Stacked */}
+      <div className="simple-stats">
+        <div className="simple-stat-card blue">
+          <div className="stat-number">{tickets.length}</div>
+          <div className="stat-label">TOTAL TICKETS</div>
+        </div>
+
+        <div className="simple-stat-card blue">
+          <div className="stat-number">{getStatusCount('Open')}</div>
+          <div className="stat-label">OPEN</div>
+        </div>
+
+        <div className="simple-stat-card orange">
+          <div className="stat-number">{getStatusCount('In Progress')}</div>
+          <div className="stat-label">IN PROGRESS</div>
+        </div>
+
+        <div className="simple-stat-card green">
+          <div className="stat-number">{getStatusCount('Resolved')}</div>
+          <div className="stat-label">RESOLVED</div>
+        </div>
+      </div>
+
+      {/* Create Button */}
+      <button onClick={() => setShowForm(true)} className="simple-create-btn">
+        + Create new ticket
+      </button>
+
+      {/* My Tickets Section */}
+      <div className="simple-tickets-section">
+        <div className="simple-section-header">
+          <h2>My Tickets</h2>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="simple-filter"
+          >
+            <option value="All">ALL status</option>
+            <option value="Open">Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+
+        {filteredTickets.length > 0 ? (
+          <TicketList
+            tickets={filteredTickets}
+            onTicketClick={setSelectedTicket}
+          />
+        ) : (
+          <div className="no-tickets">
+            <p>No tickets found</p>
+            <button onClick={() => setShowForm(true)} className="simple-create-btn" style={{ marginTop: '20px' }}>
+              + Create Your First Ticket
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Modals */}
+      {showForm && (
+        <TicketForm
+          onClose={() => setShowForm(false)}
+          onSuccess={() => {
             setShowForm(false);
-            fetchMyTickets();
-        } catch(error){
-            console.error('Error creating ticket: ', error);
-            alert('Failed to create ticket');
-        }
-    };
+            fetchTickets();
+          }}
+        />
+      )}
 
-    const handleTicketClick=(ticket)=>{
-        setSelectedTicket(ticket);
-    };
+      {selectedTicket && (
+        <TicketDetails
+          ticket={selectedTicket}
+          onClose={() => setSelectedTicket(null)}
+          onUpdate={fetchTickets}
+        />
+      )}
 
-    const closeTicketDetails=()=>{
-        setSelectedTicket(null);
-        fetchMyTickets();
-    };
-
-    const getStatusCounts=()=>{
-        return {
-            total: tickets.length,
-            open: tickets.filter(t=>t.status==='Open').length,
-            inProgress: tickets.filter(t=>t.status==='In Progress').length,
-            resolved: tickets.filter(t=>t.status==='Resolved').length
-        };
-    };
-
-    const counts= getStatusCounts();
-
-    return (
-        <div className="user-dashboard">
-            <header className="user-header">
-                <div className="header-left">
-                    <h1> My Support tickets</h1>
-                    <p>Wekcome Back, {user?.name}</p>
-                </div>
-
-                <div className="header-right">
-                    <span className="user-info">{user?.email}({user?.role}</span>
-                    <button className= "btn-logout" onClick= {logout}>Logout</button>
-                </div>
-            </header>
-
-            <div className= "stats-grid">
-                <div className="stat-card">
-                    <div className="stat-number">{counts.total}</div>
-                    <div className="stat-label">Total tickets</div>
-                </div>
-                <div className="stat-card status-open">
-                    <div className="stat-number">{counts.open}</div>
-                    <div className="stat-label">Open</div>
-                </div>
-                <div className="stat-card status-progress">
-                    <div className="stat-number">{counts.inProgress}</div>
-                    <div className="stat-label">In Progress</div>
-                    </div>
-
-                    <div className="stat-card status-resolved">
-                    <div className="stat-number">{counts.resolved}</div>
-                    <div className="stat-label">Resolved</div>
-                </div>
-                </div>
-
-                <div className="actions-bar">
-                    <button className="btn-create-ticket" onClick={()=>setShowForm(true)}>
-                        + Create new ticket
-                    </button>
-                </div>
-
-                <div className="tickets-section">
-                    <div className="section-header">
-                        <h2>My Tickets</h2>
-                        <select value={statusFilter} onChange={(e)=>setStatusFilter(e.target.value)} className="filter-select">
-                            <option value="all"> ALL status</option>
-                            <option value="Open"> Open</option>
-                            <option value="In Progress"> In Progress</option>
-                            <option value="Resolved"> Resolved</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                    {loading?(
-                        <div className="loading">Loading your tickets...</div>
-                    ): filteredTickets.length===0?(
-                        <div className="no-tickets">
-                            <p>No tickets found</p>
-                            <button className="btn-primary" onClick={()=>setShowForm(true)}>Create your first ticket</button>
-                            </div>
-                    ):(
-                        <TicketList tickets= {filteredTickets} onTicketClick={handleTicketClick}/>
-                    )}
-                </div>
-
-                {showForm && (
-                    <TicketForm onSubmit= {handleCreateTicket} onClose={()=>setShowForm(false)}
-                    hideUserFields={true}/>
-                )}
-                {selectedTicket && (
-                    <TicketDetails ticket ={selectedTicket}
-                    onClose={closeTicketDetails}
-                    onUpdate={closeTicketDetails}
-                    isUserView={true}/>
-                )}
-
-                <Chatbot />
-            </div>
-       
-    );
+      {/* Chatbot */}
+      <Chatbot />
+    </div>
+  );
 };
 
 export default UserDashboard;

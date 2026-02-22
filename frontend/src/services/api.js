@@ -12,7 +12,7 @@ const getAuthHeader=()=>{
 export const createTicket= async(ticketData)=>{
     try{
         const response= await axios.post(`${API_URL}/tickets`,ticketData, {headers:getAuthHeader()});
-        //return response.data;
+        return response.data;
     } catch(error){
         console.error('Error creating ticket: ', error);
         throw error;
