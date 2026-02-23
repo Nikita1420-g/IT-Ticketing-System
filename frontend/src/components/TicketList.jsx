@@ -1,4 +1,5 @@
 import React from 'react'
+import './TicketList.css'
 
 const TicketList=({ tickets, onTicketClick})=>{
     const getPriorityClass=(priority)=>{
@@ -33,6 +34,7 @@ const TicketList=({ tickets, onTicketClick})=>{
                         <th>Category</th>
                         <th>Priority</th>
                         <th>Status</th>
+                       <th>Requester</th>
                         <th>Created</th>
                     </tr>
                 </thead>
