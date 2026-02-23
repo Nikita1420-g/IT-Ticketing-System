@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import {updateTicket, addNoteToTicket} from '../services/api';
 import { useAuth } from '../context/AuthContext';
+import './TicketDetails.css'
 
 
 const TicketDetails=({ticket, onClose, onUpdate, isUserView= false})=>{
