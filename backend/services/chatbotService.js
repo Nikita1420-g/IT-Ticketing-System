@@ -30,7 +30,7 @@ const knowledgeBase={
         5. Try moving closer to the rputer/access devices
         6. Update your WiFi drivers
         
-        If teh issue persists, create a ticket with details about your location and device type.`
+        If the issue persists, create a ticket with details about your location and device type.`
 
     },
     printing_issues:{
@@ -68,7 +68,7 @@ const knowledgeBase={
         5. Check if your mailbox is full
         6. Try resetting your password
         
-        If you're still locked out, create a ticket fro assistance.`
+        If you're still locked out, create a ticket for assistance.`
     },
     vpn_connection:{
         category:'Network',
@@ -111,7 +111,7 @@ const knowledgeBase={
     }
 };
 
-//s ystem prompt for teh chatbot
+//system prompt for the chatbot
 const systemPrompt= `You are a helpful IT support assistant for an IT Servvice Desk.
 Your role:
 1. Help users troubleshoot common IT issues
@@ -151,12 +151,33 @@ Prioirty levels:
 - High: Significantly impacts work
 - Critical: System down, urgent business impact
 
-Important: Be generic and don't referenc any specific organization name.
+Important: Be generic and don't reference any specific organization name.
 `;
+const isEndingConversation = (message) => {
+    const endPhrases = [
+        'bye', 'goodbye', 'see you', 'thanks', 'thank you',
+        'that\'s all', 'done', 'no more', 'nothing else',
+        'all good', 'all set', 'i\'m good', 'that will be all',
+        'have a good day', 'take care'
+    ];
 
+    const lowerMessage = message.toLowerCase().trim();
+    return endPhrases.some(phrase => lowerMessage.includes(phrase));
+};
 // chat with claude
 const chatWithClaude= async(conversationHistory)=>{
     try{
+        const lastUserMessage = conversationHistory[conversationHistory.length - 1];
+        
+        if (lastUserMessage && lastUserMessage.role === 'user' && isEndingConversation(lastUserMessage.content)) {
+            return {
+                success: true,
+                message: "Goodbye! Feel free to come back anytime you need IT support. Have a great day! ",
+                usage: null,
+                isEnding: true  
+            };
+        }
+
         const response=await groq.chat.completions.create({
             model: 'llama-3.3-70b-versatile',
             messages:[
@@ -171,7 +192,8 @@ const chatWithClaude= async(conversationHistory)=>{
         return{
             success: true,
             message: response.choices[0].message.content,
-            usage: response.usage
+            usage: response.usage,
+            isEnding:false
         };
     } catch(error){
         console.error('Groq API error: ', error);
@@ -179,7 +201,8 @@ const chatWithClaude= async(conversationHistory)=>{
         return{
             sucess:false,
             error: error.message,
-            message: "I'm having trouble connecting right now. Please try again or create a ticket directly."
+            message: "I'm having trouble connecting right now. Please try again or create a ticket directly.",
+            isEnding:false
         };
     }
 };

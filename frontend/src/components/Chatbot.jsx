@@ -91,6 +91,18 @@ const Chatbot=()=>{
                     timestamp: new Date()
                 };
                 setMessages(prev =>[...prev, botMessage]);
+                 if (response.isEnding) {
+        setConversationHistory([]);
+        
+        // Reset chat after 3 seconds
+        setTimeout(() => {
+          setMessages([{
+            type: 'bot',
+            content: "Hi, I am your IT support assistant. How can I help you!",
+            timestamp: new Date()
+          }]);
+        }, 3000);
+      } else {
                 setConversationHistory(response.conversationHistory);
 
                 // If chatbot detects user needs a ticket
@@ -109,6 +121,7 @@ const Chatbot=()=>{
                     },1000);
                 }
             }
+        }
         } catch(error){
             const errorMessage= {
                 type: 'bot',

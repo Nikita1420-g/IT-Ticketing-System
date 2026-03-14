@@ -29,6 +29,7 @@ router.post('/chat', async(req,res)=>{
             role:'user',
             content: message
         });
+
         // get response from claude
         const response= await chatWithClaude(history);
 
@@ -37,6 +38,22 @@ router.post('/chat', async(req,res)=>{
                 role: 'assistant',
                 content: response.message
             });
+
+             if (response.isEnding) {
+                // Clear session on goodbye
+                if (sessionId) {
+                    sessions.delete(sessionId);
+                }
+
+                return res.json({
+                    success: true,
+                    message: response.message,
+                    conversationHistory: [],  // Clear history
+                    needsTicket: false,
+                    isEnding: true,  
+                    usage: response.usage
+                });
+            }
 
             // save session
             if(sessionId){
@@ -51,6 +68,7 @@ router.post('/chat', async(req,res)=>{
                 message: response.message,
                 conversationHistory:history,
                 needsTicket,
+                isEnding:false,
                 usage: response.usage
             });
 
