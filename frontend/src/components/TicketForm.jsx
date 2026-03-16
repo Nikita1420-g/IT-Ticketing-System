@@ -8,7 +8,7 @@ const TicketForm = ({ onClose, onSuccess }) => {
     title: '',
     description: '',
     category: 'Software',
-    priority: 'Medium',
+    //priority: 'Medium',
     requesterName: '',
     requesterEmail: ''
   });
@@ -97,7 +97,7 @@ const TicketForm = ({ onClose, onSuccess }) => {
               </select>
             </div>
 
-            <div className="form-group">
+            {/* <div className="form-group">
               <label htmlFor="priority">Priority *</label>
               <select
                 id="priority"
@@ -112,6 +112,12 @@ const TicketForm = ({ onClose, onSuccess }) => {
                 <option value="Critical">Critical</option>
               </select>
             </div>
+          </div> */}
+             <div className="info-box">
+            <p>
+              <strong>Priority Assignment:</strong> All new tickets are set to Medium priority by default. 
+              Our support team will review and adjust the priority based on urgency and business impact.
+            </p>
           </div>
 
           <div className="form-row">

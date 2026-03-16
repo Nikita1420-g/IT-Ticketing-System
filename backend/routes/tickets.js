@@ -51,6 +51,7 @@ router.post('/',authenticate, async(req,res)=>{
     try{
         const ticketData={
             ...req.body,
+            priority: 'Medium',
             requesterName: req.user.name,
             requesterEmail: req.user.email
         };
@@ -114,7 +115,7 @@ if(req.user.role==='user' && ticket.requesterEmail !== req.user.email){
 
 
 // update ticket
-router.put('/:id', authenticate,async(req,res)=>{
+router.put('/:id', authenticate, authorize('technician','admib'),async(req,res)=>{
     try{
         const oldTicket= await Ticket.findById(req.params.id);
         if(!oldTicket){
@@ -153,7 +154,7 @@ router.put('/:id', authenticate,async(req,res)=>{
 });
 
 // delete ticket
-router.delete('/:id', authenticate, async(req,res)=>{
+router.delete('/:id', authenticate, authorize('admin'), async(req,res)=>{
     try{
         const ticket=await Ticket.findByIdAndDelete(req.params.id);
         if(!ticket){
@@ -164,7 +165,7 @@ router.delete('/:id', authenticate, async(req,res)=>{
         }
         res.json({
             success: true,
-            messgae:'Ticket deleted successfully'
+            message:'Ticket deleted successfully'
         });
     }catch(error){
         res.status(500).json({

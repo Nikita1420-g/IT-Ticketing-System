@@ -284,3 +284,25 @@
 .modal-card::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+/* Info Box for Priority Notice */
+.info-box {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border: 2px solid #3b82f6;
+  border-left: 5px solid #3b82f6;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+
+.info-box p {
+  margin: 0;
+  color: #1e40af;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.info-box strong {
+  font-weight: 700;
+  display: block;
+  margin-bottom: 4px;
+}
