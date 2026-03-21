@@ -111,8 +111,8 @@ const TicketForm = ({ onClose, onSuccess }) => {
                 <option value="High">High</option>
                 <option value="Critical">Critical</option>
               </select>
-            </div>
-          </div> */}
+            </div >*/}
+          </div> 
              <div className="info-box">
             <p>
               <strong>Priority Assignment:</strong> All new tickets are set to Medium priority by default. 
@@ -169,6 +169,7 @@ const TicketForm = ({ onClose, onSuccess }) => {
         </form>
       </div>
     </div>
+    
   );
 };
 
