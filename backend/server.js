@@ -8,8 +8,8 @@ const app= express();
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://it-ticketing-system-iota.vercel.app/dashboard',
-  'https://ticketingsystems.netlify.app/login'
+  'https://it-ticketing-system-iota.vercel.app',
+  'https://ticketingsystems.netlify.app'
 ];
 
 app.use(cors({
